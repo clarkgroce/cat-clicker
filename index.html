@@ -1,61 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src = "js/app.js"></script>
-    <style>
-    html {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-    }
-    *, *:before, *:after {
-      -webkit-box-sizing: inherit;
-      -moz-box-sizing: inherit;
-      box-sizing: inherit;
-      }
-    main {
-        background-color: #efd6d5;
-        border-radius: 10px;
-        padding: 15px;
-    }
-    img {
-    max-width: 100%;
-    }
-    #catSelection {
-        width: 200px;
-        height: 300px;
-        display: inline-block;
-        margin-right: 20px; 
-        vertical-align: top;
-    }
-    .catSection {
-        margin: 20px;
-        font-size: 1.3em;
-    }
-    .catSection a {
-        text-decoration: none;
-    }
-    #displayArea {
-        width: 300px;
-        height: 300px;
-        display: inline-block;
-        font-size: 1.2em;
-    }
-    </style>
     <title>Cat Clicker</title>
 </head>
 <body>
-<h1>Select a Cat:</h1>
-<main> 
-<div id = "catSelection"></div>
-<div id = "displayArea"> 
-    <span id= "hint"> Please select a cat</span>
-    <div id = "catName"></div>
-    <div id = "catPic"></div>
-    <div id = "catNumClick"></div>
-</div>
-</main>
+    <ul id="cat-list"></ul>
+    <div id="cat">
+        <h2 id="cat-name"></h2>
+        <div id="cat-count"></div>
+        <img id="cat-img" src="" width= "300" height="300">
+    </div>
+    <script src="js/app.js"></script>
 </body>
 </html>

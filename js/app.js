@@ -1,78 +1,143 @@
-// info in  catSelection 
-var cats = ["Silvia", "Golphy", "Cutie", "Sadie", "Naughty"];
+/* ======= Model ======= */
 
-// info in displayArea
-var catInfo = {
-        "Silvia":
-            {
-                "pic" : "cat1.jpg",
-                "numClick" : 0
-            },
-        "Golphy":
-            {
-                "pic" : "cat2.jpg",
-                "numClick" : 0
-            },
-        "Cutie":
-            {
-                "pic" : "cat3.jpg",
-                "numClick" : 0
-            },
-        "Sadie": 
-            {
-                "pic" : "sadie.jpg",
-                "numClick" : 0
-            },
-        "Naughty": 
-            {
-                "pic" : "naughty.jpg",
-                "numClick" : 0
-            }                       
-        };
-for (i = 0; i < cats.length; i++) {
-    var cat = cats[i];
-
-    // create <div>
-    var catElement = document.createElement('div');
-    catElement.className = 'catSection';
-
-    // create <a>
-    var catElementLink = document.createElement('a');   
-    catElementLink.id = cats[i];    
-    catElementLink.textContent = cat;
-
-    catElement.appendChild(catElementLink);
-    catElementLink.href = "#";
-    $("#catSelection").append(catElement);
-
-    // create display area
-    var display = document.createElement('div');
-    display.className = 'displayArea';
-
-    // add event listener 
-    catElementLink.addEventListener('click', function(){
-
-        //hide the hint
-        $("#hint").hide();
-        //get id
-        var catID = $(this).attr('id');
-
-        // clear out previous text
-        $("#catName").text("");
-        $("#catPic").text("");
-        $("#catNumClick").text("");
-
-        // append name, pic and click count
-        $("#catName").append("Cat name: " +catID);
-        $("#catNumClick").append("Number of clicks: "+ catInfo[catID].numClick); 
-        $("#catPic").append('<img src="'+  catInfo[catID].pic +'">');
-
-        // clear out previous click count text and increment the click count number when user clicks on the image
-        document.getElementById("catPic").onclick = function(){
-            $("#catNumClick").text("");
-            catInfo[catID].numClick++;
-            $("#catNumClick").append("Number of clicks: "+ catInfo[catID].numClick);
+var model = {
+    currentCat: null,
+    cats: [
+        {
+            clickCount : 0,
+            name : 'Tabby',
+            imgSrc : 'cat1.jpg',
+        },
+        {
+            clickCount : 0,
+            name : 'Tiger',
+            imgSrc : 'cat2.jpg',
+        },
+        {
+            clickCount : 0,
+            name : 'Scaredy',
+            imgSrc : 'cat3.jpg',
+        },
+        {
+            clickCount : 0,
+            name : 'Shadow',
+            imgSrc : 'cat4.jpg',
+        },
+        {
+            clickCount : 0,
+            name : 'Sleepy',
+            imgSrc : 'cat5.jpg',
         }
-    });
-}
+    ]
+};
+
+
+/* ======= Octopus ======= */
+
+var octopus = {
+
+    init: function() {
+        // set our current cat to the first one in the list
+        model.currentCat = model.cats[0];
+
+        // tell our views to initialize
+        catListView.init();
+        catView.init();
+    },
+
+    getCurrentCat: function() {
+        return model.currentCat;
+    },
+
+    getCats: function() {
+        return model.cats;
+    },
+
+    // set the currently-selected cat to the object passed in
+    setCurrentCat: function(cat) {
+        model.currentCat = cat;
+    },
+
+    // increments the counter for the currently-selected cat
+    incrementCounter: function() {
+        model.currentCat.clickCount++;
+        catView.render();
+    }
+};
+
+
+/* ======= View ======= */
+
+var catView = {
+
+    init: function() {
+        // store pointers to our DOM elements for easy access later
+        this.catElem = document.getElementById('cat');
+        this.catNameElem = document.getElementById('cat-name');
+        this.catImageElem = document.getElementById('cat-img');
+        this.countElem = document.getElementById('cat-count');
+
+        // on click, increment the current cat's counter
+        this.catImageElem.addEventListener('click', function(){
+            octopus.incrementCounter();
+        });
+
+        // render this view (update the DOM elements with the right values)
+        this.render();
+    },
+
+    render: function() {
+        // update the DOM elements with values from the current cat
+        var currentCat = octopus.getCurrentCat();
+        this.countElem.textContent = currentCat.clickCount;
+        this.catNameElem.textContent = currentCat.name;
+        this.catImageElem.src = currentCat.imgSrc;
+    }
+};
+
+var catListView = {
+
+    init: function() {
+        // store the DOM element for easy access later
+        this.catListElem = document.getElementById('cat-list');
+
+        // render this view (update the DOM elements with the right values)
+        this.render();
+    },
+
+    render: function() {
+        var cat, elem, i;
+        // get the cats we'll be rendering from the octopus
+        var cats = octopus.getCats();
+
+        // empty the cat list
+        this.catListElem.innerHTML = '';
+
+        // loop over the cats
+        for (i = 0; i < cats.length; i++) {
+            // this is the cat we're currently looping over
+            cat = cats[i];
+
+            // make a new cat list item and set its text
+            elem = document.createElement('li');
+            elem.textContent = cat.name;
+
+            // on click, setCurrentCat and render the catView
+            // (this uses our closure-in-a-loop trick to connect the value
+            //  of the cat variable to the click event function)
+            elem.addEventListener('click', (function(catCopy) {
+                return function() {
+                    octopus.setCurrentCat(catCopy);
+                    catView.render();
+                };
+            })(cat));
+
+            // finally, add the element to the list
+            this.catListElem.appendChild(elem);
+        }
+    }
+};
+
+// make it go!
+octopus.init();
 
